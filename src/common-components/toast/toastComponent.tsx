@@ -16,6 +16,7 @@ const ToastComponent: React.FC = () => {
     updateToast(false, "")
   }
   return (
+    <div data-testid="toastContainer">
     <Row>
       <Col xs={6}>
       <ToastContainer
@@ -23,8 +24,8 @@ const ToastComponent: React.FC = () => {
           position={"middle-center"}
           style={{ zIndex: 1 }}
         >
-        <Toast onClose={() => closeToast()} show={appConfigState.showToast} delay={3000} autohide  bg="danger">
-          <Toast.Header>
+        <Toast  onClose={() => closeToast()} show={appConfigState.showToast} delay={80000} autohide  bg="danger">
+          <Toast.Header data-testid="toastClose">
             <img
               src="holder.js/20x20?text=%20"
               className="rounded me-2"
@@ -40,6 +41,7 @@ const ToastComponent: React.FC = () => {
         <Button onClick={() => setShow(true)}>Show Toast</Button>
       </Col>
     </Row>
+    </div>
   );
 }
 
