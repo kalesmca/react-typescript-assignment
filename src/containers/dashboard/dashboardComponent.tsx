@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllDogs, getDogsByBreedName } from "../../redux/actions/dashboard";
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 import { useDebounce } from "../../customHooks/useDebounce";
 import * as CONSTANTS from '../../config/constants';
-import './dashboard.css'
-import { RootState } from "../../redux/store";
-import { useAppSelector, useAppDispatch } from '../../customHooks/hooks';
+import './dashboard.css';
+import CardComponent from "../../common-components/card/cardComponent";
+import {Dashboard, Dog} from '../../config/interfaceList';
+import { useActions } from "../../customHooks/useActions";
+import { useTypedSelector } from "../../customHooks/useTypedSelector";
+const DashboardComponent: React.FC = () => {
+    const dashboard: Dashboard = useTypedSelector((state) => state.dashboard);
 
-const Dashboard = () => {
-    const dashboard: dashboardState = useSelector((state: RootState) => state.dashboard);
-    const dispatch = useAppDispatch();
     const [query, setQuery] = useState("");
-    const searchQuery = useDebounce(query, 2000)
+    const searchQuery = useDebounce(query, 1000)
+    const [key, setKey] = useState("nameAsc");
+    const {getDogsByBreedName} = useActions();
     let index = 0;
     let flag = false
 
@@ -28,32 +30,39 @@ const Dashboard = () => {
         }
         if (!dashboard.isBucketFull && flag) {
             flag = false
-            searchQuery ? dispatch(getDogsByBreedName(searchQuery, true, dashboard)) : dispatch(getAllDogs(dashboard, true))
+            getDogsByBreedName(searchQuery, true, dashboard, key)
             index = index + 1;
         }
 
 
     };
 
+    useEffect(()=>{
+        getDogsByBreedName(searchQuery, false, dashboard, key)
+    },[key])
+
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     });
 
-    useEffect(() => {
-        dispatch(getAllDogs(dashboard, false))
+    // useEffect(() => {
+    //     dispatch(getDogsByBreedName(searchQuery, false, dashboard, key))
 
-    }, [])
+    // }, [])
     useEffect(() => {
-        dispatch(getDogsByBreedName(searchQuery, false, dashboard))
+        getDogsByBreedName(searchQuery, false, dashboard, key)
 
     }, [searchQuery])
     useEffect(() => {
         console.log("state:", dashboard);
 
     }, [dashboard])
+    const setSortQuery = (e:any) => {
+        setKey(e)
+    }
     return (
-        <div>
+        <div data-testid="dashboard-testId">
             <Form>
                 <Row className="mb-3">
                     <Form.Group as={Col} controlId="formGridEmail">
@@ -64,34 +73,34 @@ const Dashboard = () => {
                     </Form.Group>
                 </Row>
             </Form>
+            
+        <div>
+          <span className="sort-title">SortBy:</span>
+          <span>
+            <Tabs
+              id="controlled-tab-example"
+              activeKey={key}
+              onSelect={(k) => setSortQuery(k)}
+              className="mb-3"
+            >
+                {
+                    Object.keys(CONSTANTS.SORT_TAP_LIST).map((key:string, tabIndex) =>{
+                        return(
+                            <Tab key={tabIndex} eventKey={key} title={CONSTANTS.SORT_TAP_LIST[key].label}></Tab>
+                        )
+                    })
+                }
+              
+            </Tabs>
+          </span>
+        </div>
             <div>
                 {
-                    dashboard?.dogList?.length ? dashboard.dogList.map((dog: any, dIndex: number) => {
+                    dashboard?.dogList?.length ? dashboard.dogList.map((dog: Dog, dIndex: number) => {
                         return (
-                            (<div className="card-container"><Card style={{ width: '18rem' }}>
-                                <Card.Img variant="top" src={CONSTANTS.IMG_BASE_BATH + dog.reference_image_id + '.jpg'} />
-                                <Card.Body>
-                                    <Card.Title>{dog.name}</Card.Title>
-                                    <Card.Text>
-                                        <div className="card-body-content">
-                                            <span className="card-body-title">Origin</span>
-                                            <span className="card-body-value">{dog.origin ? dog.origin : "Universal"}</span>
-                                        </div>
-                                        <div className="card-body-content">
-                                            <span className="card-body-title">life_span</span>
-                                            <span className="card-body-value">{dog.life_span}</span>
-                                        </div>
-                                        <div className="card-body-content">
-                                            <span className="card-body-title">Temperament</span>
-                                            <span className="card-body-value">{dog.temperament}</span>
-                                        </div>
-
-
-
-                                    </Card.Text>
-
-                                </Card.Body>
-                            </Card></div>)
+                            (
+                                <CardComponent dog={dog} />
+                            )
                         )
                     })
                         : (<div>No Data Found.</div>)
@@ -105,4 +114,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard;
+export default DashboardComponent;
