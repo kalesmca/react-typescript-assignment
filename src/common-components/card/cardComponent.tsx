@@ -9,7 +9,7 @@ interface Props {
 const CardComponent = (props:Props) => {
     const {dog} = props;
     return(
-        <div className="card-container"><Card style={{ width: '18rem' }}>
+        <div className="card-container" data-testid="cardTest"><Card style={{ width: '18rem' }}>
                                 <Card.Img variant="top" src={CONSTANTS.IMG_BASE_BATH + dog.reference_image_id + '.jpg'} />
                                 <Card.Body>
                                     <Card.Title>{dog.name}</Card.Title>
