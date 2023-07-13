@@ -1,20 +1,28 @@
-import * as Types from '../../config/actions';
+import { Dashboard } from '../../config/interfaceList';
+import { Action } from '../actionInterface';
+import {ActionType} from '../../config/actions';
 
-const initState: dashboardState = {
+const initState: Dashboard = {
     dogList: [],
     isBucketFull:false,
-    paginationIndex:0
+    paginationIndex:0,
+    sortBy:"nameAsc",
+    allDataList:[]
          
 }
 
-const dashboard = (state=initState, action:any) =>{
+const dashboard = (state:Dashboard=initState, action:Action) =>{
     switch(action.type) {
-        case Types.GET_DOGS :{
+        case ActionType.GET_DOGS :{
             return {...state, dogList:[...state.dogList, ...action.data], isBucketFull: action.flag, paginationIndex:action.stateIndex}
         }
-        case Types.UPDATE_DOGS:{
+        case ActionType.UPDATE_DOGS:{
             return {
-                ...state, dogList: action.data, isBucketFull: action.isBucketFull, paginationIndex:action.stateIndex
+                ...state, 
+                dogList: action.data, 
+                isBucketFull: action.isBucketFull, 
+                paginationIndex:action.stateIndex,
+                allDataList:action.allDataList
             }
         }
                

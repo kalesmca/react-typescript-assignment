@@ -4,8 +4,3 @@ declare module '*.svg' {
   export default content
 }
 
-declare interface dashboardState  {
-  dogList:any[],
-  isBucketFull:boolean,
-  paginationIndex:0
-}
