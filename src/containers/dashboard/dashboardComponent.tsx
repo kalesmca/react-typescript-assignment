@@ -65,10 +65,10 @@ const DashboardComponent: React.FC = () => {
         <div data-testid="dashboard-testId">
             <Form>
                 <Row className="mb-3">
-                    <Form.Group as={Col} controlId="formGridEmail">
+                    <Form.Group as={Col} controlId="formGridEmail" >
 
                         {/* <Form.Label></Form.Label> */}
-                        <Form.Control type="text" value={query} onChange={(e) => { setQuery(e.target.value); index = 0 }} placeholder="Seach by Breed"
+                        <Form.Control data-testid="searchQuery" type="text" value={query} onChange={(e) => { setQuery(e.target.value); index = 0 }} placeholder="Seach by Breed"
                         />
                     </Form.Group>
                 </Row>
@@ -82,11 +82,12 @@ const DashboardComponent: React.FC = () => {
               activeKey={key}
               onSelect={(k) => setSortQuery(k)}
               className="mb-3"
+              data-testid="tabsTest"
             >
                 {
                     Object.keys(CONSTANTS.SORT_TAP_LIST).map((key:string, tabIndex) =>{
                         return(
-                            <Tab key={tabIndex} eventKey={key} title={CONSTANTS.SORT_TAP_LIST[key].label}></Tab>
+                            <Tab data-testid="tab" key={tabIndex} eventKey={key} title={CONSTANTS.SORT_TAP_LIST[key].label}></Tab>
                         )
                     })
                 }
@@ -99,17 +100,14 @@ const DashboardComponent: React.FC = () => {
                     dashboard?.dogList?.length ? dashboard.dogList.map((dog: Dog, dIndex: number) => {
                         return (
                             (
-                                <CardComponent dog={dog} />
+                                <CardComponent key={dIndex} dog={dog} />
                             )
                         )
                     })
-                        : (<div>No Data Found.</div>)
+                        : (<div data-testid="noData">No Data Found.</div>)
                 }
             </div>
-            {
-             flag ? (<div>Loading...</div>):""   
-            }
-            <div></div>
+            
         </div>
     )
 }
