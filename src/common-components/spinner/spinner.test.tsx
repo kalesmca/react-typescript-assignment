@@ -2,7 +2,6 @@
 import { screen, fireEvent } from '@testing-library/react';
 import Spinner from './spinnerComponents';
 import { RenderWithRtl } from '../../config/testUtils';
-import {Map} from 'immutable'
 const mockData = () => {
 
     const AppConfig = {
@@ -11,14 +10,14 @@ const mockData = () => {
         showToast:false
     };
   
-    const mockState = Map({
+    const mockState = {
         appConfig: AppConfig,
         dashboard: {dogList: [],
             isBucketFull:false,
             paginationIndex:0,
             sortBy:"nameAsc",
             allDataList:[]}
-    });
+    };
   
     return { mockState };
   }
